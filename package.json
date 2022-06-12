@@ -1,0 +1,36 @@
+{
+  "name": "jonas-bot",
+  "version": "1.0.0",
+  "description": "Jonas Discord Bot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "Discord",
+    "bot"
+  ],
+  "author": "Jonas Lang",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "@discordjs/voice": "^0.8.0",
+    "@napi-rs/canvas": "^0.1.22",
+    "discord-api-types": "^0.31.1",
+    "discord-together": "^1.3.3",
+    "discord.js": "^13.6.0",
+    "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^4.4.1",
+    "firebase": "^9.8.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "libsodium-wrappers": "^0.7.10",
+    "opusscript": "^0.0.8",
+    "prism-media": "^1.3.2",
+    "tweetnacl": "^1.0.3",
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.11.0"
+  }
+}
