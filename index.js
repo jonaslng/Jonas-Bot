@@ -1,5 +1,4 @@
 import prism from "prism-media";
-
 import {
   Client,
   Intents,
@@ -29,7 +28,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { createPlaylist, getPlaylists } from "./Operations.js";
 
-
+import "dotenv/config.js";
 
 const client = new Client({
   presence: {
@@ -108,6 +107,12 @@ client.on("guildCreate", async (guild) => {
                     value: "syncPlaylist",
                   },
                 ]
+              },
+              {
+                name: "name",
+                description: "Name der Playlist oder freilassen für eine Übersicht aller Playlists.",
+                type: 3,
+                required: false
               }
             ],
           },
@@ -171,7 +176,7 @@ client.on("interactionCreate", async (interaction) => {
               .setURL(video.url)
               .setImage(video.thumbnail)
               .setDescription(video.author.name)
-              .setFooter(voicechannel.name);
+              .setFooter("Note that the audio feature is still under development");
             let controls = new MessageActionRow().addComponents(
               new MessageButton()
                 .setCustomId("back")
@@ -207,7 +212,7 @@ client.on("interactionCreate", async (interaction) => {
                     " songs in Queue",
                   thumbnail: video.image,
                   footer: {
-                    text: voicechannel.name,
+                    text: "Note that the audio feature is still under development",
                   },
                 },
               ],
@@ -275,7 +280,17 @@ client.on("interactionCreate", async (interaction) => {
         }
       }
       if(operation === "createPlaylist"){
-
+        await interaction.editReply({
+          embeds: [
+            {
+              title: "Ladevorgang",
+              description: "```Playlist wird erstellt (0%)```",
+            }
+          ],
+          components: []
+        })
+  
+        await createPlaylist(client, interaction);
       }
       if(operation === "syncPlaylist"){
 
@@ -354,7 +369,7 @@ client.on("interactionCreate", async (interaction) => {
           .setURL(video.url)
           .setImage(video.thumbnail)
           .setDescription(video.author.name)
-          .setFooter(interaction.member.voice.channel.name);
+          .setFooter("⚠️ Note that the music player is still under development");
         await interaction.update({
           embeds: [embed],
           components: [controls],
@@ -470,7 +485,7 @@ client.on("interactionCreate", async (interaction) => {
           .setURL(video.url)
           .setImage(video.thumbnail)
           .setDescription(video.author.name)
-          .setFooter(interaction.member.voice.channel.name);
+          .setFooter("Note that the audio feature is still under development");
         await interaction.update({
           embeds: [embed],
           components: [controls],
@@ -554,6 +569,18 @@ client.on("interactionCreate", async (interaction) => {
       await createPlaylist(client, interaction);
 
     }
+
+
+    if(interaction.customId.startsWith("playPlaylist.")){
+        let playlistId = interaction.customId.split(".")[1];
+
+
+    }
+    if(interaction.customId.startsWith("shufflePlaylist.")){
+      let playlistId = interaction.customId.split(".")[1];
+
+
+    }
   }
 });
 
@@ -629,7 +656,25 @@ const play = async (channelId) => {
         let msg = await queue[channelId].interaction.fetchReply();
         await msg.delete();
         queue[channelId] = undefined;
-      } catch (e) { }
+      } catch (e) {
+        let msg = await queue[olds.channelId].interaction.fetchReply();
+    let controls = new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId("error_help")
+        .setStyle("DANGER")
+        .setLabel("Melden")
+    );
+    await msg.edit({
+      embeds: [
+        {
+          title: "Fehler",
+          description:
+            "Drücke 'Melden', um den Fehler an das Entwicklerteam zu senden.",
+        },
+      ],
+      components: [controls],
+    });
+      }
       return;
     } else {
       let video = await getVideo(queue[channelId].songs[0]);
@@ -654,7 +699,7 @@ const play = async (channelId) => {
         .setURL(video.url)
         .setImage(video.thumbnail)
         .setDescription(video.author.name)
-        .setFooter(queue[channelId].interaction.member.voice.channel.name)
+        .setFooter(queue[channelId].interaction.member.voice.channel.name+" (Note that this is a **Beta** Feature)")
         .setAuthor({
           name: "🔊 Hi-Res",
         });
@@ -676,4 +721,5 @@ async function getVideo(name) {
   return video;
 }
 
-client.login("OTYzMzg5NTA2NzMwNDgzNzEy.YlVYZQ.YWXoGkCMxPDuJVXZim9DFwQMh9k");
+
+client.login(process.env.TOKEN);
